@@ -1,0 +1,126 @@
+import { useEffect } from 'react'
+import './App.css'
+import { useAuthStore } from './store/useStore';
+import LoginPage from './pages/auth/LoginPage';
+import PropTypes from 'prop-types';
+import LayoutTechnician from './layouts/LayoutTechnician';
+import { Routes, Route, Navigate } from 'react-router-dom'
+import LoadingSpinner from './components/common/LoadingSpinner';
+import TasksPage from './pages/technician/TasksPage';
+import LayoutLeader from './layouts/LayoutLeader';
+import GroupPageLeader from './pages/leader/GroupPageLeader';
+import DetailsByGroup from './components/leader/modal/DetailsByGroup';
+import LayoutAdmin from './layouts/LayoutAdmin';
+import DashboardPageAdmin from './pages/admin/DashboardPageAdmin';
+import GroupPageAdmin from './pages/admin/GroupPageAdmin';
+import UserPageAdmin from './pages/admin/UserPageAdmin';
+import DetailsByGroupAdmin from './components/admin/modal/DetailsByGroupAdmin';
+
+const ProtectedRoute = ({ allowedRoles, children }) => {
+  const { isAuthenticated, user} = useAuthStore();
+  if (!isAuthenticated) {
+    return <Navigate to='/' replace />;
+  }
+
+  if (!allowedRoles.includes(user.rolId)) {
+    if (user.rolId === 1) return <Navigate to="/admin/dashboard" replace />;
+    if (user.rolId === 2) return <Navigate to="/lider/grupos" replace />;
+    if (user.rolId === 3) return <Navigate to="/tecnico/tareas" replace />;
+  }
+
+  return children;
+};
+
+const RedirectAuthenticatedUser = ({ children }) => {
+  const { isAuthenticated, user } = useAuthStore();
+  
+  if (isAuthenticated) {
+    if (user.rolId === 1) {
+      return <Navigate to="/admin/dashboard" replace />;
+    }
+
+    if (user.rolId === 2) {
+      return <Navigate to="/lider/grupos" replace />;
+    }
+
+    if (user.rolId === 3) {
+      return <Navigate to="/tecnico/tareas" replace />;
+    }
+  }
+
+  return children;
+};
+
+
+function App() {
+  const { isCheckingAuth, checkAuth } = useAuthStore();
+	useEffect(() => {
+		checkAuth();
+	}, [checkAuth]);
+
+  if (isCheckingAuth) return <LoadingSpinner />;
+
+  return (
+    <Routes>
+      <Route 
+        path="/" 
+        element={
+          <RedirectAuthenticatedUser>
+            <LoginPage/>
+          </RedirectAuthenticatedUser>
+        }
+      />
+      <Route 
+        path="/admin" 
+        element={
+          <ProtectedRoute allowedRoles={[1]}>
+            <LayoutAdmin/>
+          </ProtectedRoute>
+        }
+      >
+        <Route path="dashboard" element={<DashboardPageAdmin />}/>
+        <Route path="grupos" element={<GroupPageAdmin />}>
+          <Route path="detalles/:groupId" element={ <DetailsByGroupAdmin />} />
+        </Route>
+        <Route path="usuarios" element={<UserPageAdmin />}/>
+      </Route>
+      <Route
+        path="/lider" 
+        element={
+          <ProtectedRoute allowedRoles={[2]}>
+            <LayoutLeader/>
+          </ProtectedRoute>
+        }
+      >
+        <Route path="grupos" element={<GroupPageLeader />}>
+          
+          <Route path="detalles/:groupId" element={ <DetailsByGroup />} />
+        </Route>
+      </Route>
+      <Route
+        path="/tecnico" 
+        element={
+          <ProtectedRoute allowedRoles={[3]}>
+            <LayoutTechnician />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="tareas" element={<TasksPage />}/>
+      </Route>
+
+      {/* <Route path="*" element={ <NotFoundPage/> } /> */}
+    </Routes>
+  )
+}
+
+ProtectedRoute.propTypes = {
+  allowedRoles: PropTypes.arrayOf(PropTypes.number).isRequired,
+  children: PropTypes.node,
+};
+
+RedirectAuthenticatedUser.propTypes = {
+  children: PropTypes.node,
+};
+
+
+export default App

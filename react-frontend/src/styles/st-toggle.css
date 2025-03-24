@@ -1,0 +1,28 @@
+.toggle-container {
+  width: 50px;
+  height: 25px;
+  border-radius: 25px;
+  background-color: #ccc; /* Color para estado inactivo */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 3px;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-container.checked {
+  background-color: #4caf50; /* Color para estado activo */
+}
+
+.toggle-circle {
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.toggle-container.checked .toggle-circle {
+  transform: translateX(25px); /* Movimiento hacia la derecha */
+}

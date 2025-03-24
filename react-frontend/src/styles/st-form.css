@@ -1,0 +1,261 @@
+.container-form{
+  background-color: var(--bg-form);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: auto;
+  min-width: 400px;
+  max-width: 100%;
+  max-height: 90vh;
+  border-radius: 10px;
+  position: relative;
+  overflow: auto;
+}
+
+.container-form::-webkit-scrollbar {
+  width: 12px;
+  height: 12px; 
+}
+
+.container-form::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+.container-form::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.container-form::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.container-form .header-form{
+  display: flex;
+  justify-content: right;
+  position: absolute;
+  right: 20px;
+}
+
+.container-form .header-form button{
+  background-color: transparent;
+  outline: none;
+  border: none;
+  font-size: var(--display-xs);
+  color: var(--text-primary);
+}
+
+.container-form .header-form button:hover{
+  color: var(--error);
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+.container-form .title-form h2{
+  text-align: left;
+  color: var(--text-tertiary);
+  font-size: var(--display-xs);
+  margin-bottom: 10px;
+}
+
+.container-form .container-options {
+  display: flex; 
+  flex-direction: row;
+  gap: var(--spacing-md);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--border);
+}
+
+.tab-button {
+  background-color: transparent;
+  border: none;
+  border-radius: 0px;
+  color: var(--blue-500);
+  border-bottom: 1px solid transparent;
+  transition: border-bottom 0.3s ease;
+
+}
+
+.tab-button:hover {
+  background-color: transparent;
+  border-bottom: 2px solid lightgray;
+}
+
+.tab-button.active {
+  border-bottom: 2px solid var(--blue-500);
+  font-weight: bold;
+}
+
+.container-form form {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  gap: var(--spacing-2xl);
+  align-items: flex-start;
+}
+
+.container-form form .group-form{
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  justify-content: center;
+}
+
+.container-form form .group-form .subgroup-form{
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.container-form form .group-form.tbl-delay{
+  min-width: 350px;
+}
+
+.subgroup-form input[type=file] {
+  padding: 10px;
+  border-radius: var(--radius-md);
+  background-color: var(--form-bg-item-added);
+  font-size: var(--text-sm);
+}
+
+.subgroup-form input[type=file]::-webkit-file-upload-button {
+  background-color: var(--blue-500);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius-4xl);
+  cursor: pointer;
+  user-select: none;
+}
+
+.subgroup-form input[type=file]::-webkit-file-upload-button:hover {
+  background-color: var(--botton-primary-hover)
+}
+
+.container-form form .group-form .subgroup-form img{
+  max-width: 200px;
+  margin-top: 10px
+}
+
+.container-form form label{
+  color: var(--text-secundary);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.container-form form label span{
+  color: var(--clear-alert);
+}
+
+.container-form form select,
+.container-form form input[type='text'],
+.container-form form input[type='number'],
+.container-form form input[type='date'],
+.container-form form input[type='password']{
+  width: 420px;
+} 
+
+
+.container-form form span.required{
+  color: red;
+  font-weight: bold;
+}
+
+.container-form form .row-password input[type="password"],
+.container-form form .row-password input[type="text"],
+.container-form form .row-password input[type="number"] {
+  width: 100%;
+}
+
+.container-form form .error-message{
+  color: var(--error);
+  font-size: 13px;
+}
+
+.container-form form .group-form .container-table{
+  height: 550px;
+  max-height: 100%;
+}
+
+.container-form form .group-form .container-table::-webkit-scrollbar {
+  width: 12px;
+  height: 12px; 
+}
+
+.container-form form .group-form .container-table::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+.container-form form .group-form .container-table::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.container-form form .group-form .container-table::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+@media screen and (max-width: 768px) {
+  .container-form {
+    padding: 10px;
+    min-width: auto;
+  }
+
+  .container-form form{
+    flex-direction: column;
+  }
+  .container-form form .group-form.tbl-delay {
+    min-width: 100%;
+  }
+
+  .container-form .header-form {
+    right: 10px;
+  }
+
+  .container-form form .group-form .subgroup-form img {
+    max-width: 150px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .container-form {
+    padding: 8px;
+    border-radius: 5px;
+  }
+
+  .container-form .title-form h2 {
+    font-size: var(--text-md);
+  }
+
+  .container-form form label {
+    font-size: var(--text-xs);
+  }
+
+
+  .container-form form .group-form {
+    gap: var(--spacing-md);
+  }
+
+  .container-form form select,
+  .container-form form input[type='text'],
+  .container-form form input[type='number'],
+  .container-form form input[type='date'],
+  .container-form form input[type='password'] {
+    font-size: var(--text-sm);
+    padding: 8px;
+  }
+
+  .subgroup-form input[type=file] {
+    font-size: var(--text-xs);
+  }
+
+  .subgroup-form input[type=file]::-webkit-file-upload-button {
+    padding: 8px 16px;
+  }
+
+  .container-form .container-options {
+    flex-direction: column;
+  }
+}

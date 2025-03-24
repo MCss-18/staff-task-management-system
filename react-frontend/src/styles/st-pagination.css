@@ -1,0 +1,21 @@
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.pagination form {
+  display: flex;
+  height: 100%;
+  align-items: stretch;
+  gap: 5px;
+}
+
+.pagination input {
+  width: 100%;
+  text-align: center;
+}
+
