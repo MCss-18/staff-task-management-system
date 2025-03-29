@@ -11,6 +11,7 @@ export class TaskModel {
       'u.apellidos, ' ,
       't.tipo_tarea_id, ',
       't.estado, ',
+      'tt.cod_ot, ',
       'tt.descripcion, ',
       't.fecha_creacion, ',
       't.fecha_modificacion ',
@@ -18,12 +19,12 @@ export class TaskModel {
       'INNER JOIN grupo_miembro gp ON t.grupo_miembro_id = gp.id_grupo_miembro',
       'INNER JOIN usuario u ON gp.usuario_tecnico_id = u.id_usuario',
       'INNER JOIN tipo_tarea tt ON t.tipo_tarea_id = tt.id_tipo_tarea',
-      'WHERE gp.grupo_id = ? AND (u.nombres LIKE ? OR u.apellidos LIKE ?)',
+      'WHERE gp.grupo_id = ? AND (tt.cod_ot LIKE ? OR tt.descripcion LIKE ? OR u.apellidos LIKE ?)',
       'ORDER BY t.fecha_creacion',
       'LIMIT ? OFFSET ?'
     ].join('\n');
   
-    const values = [groupId, `%${search}%`, `%${search}%`, Number(limit), Number(offset)]
+    const values = [groupId, `%${search}%`, `%${search}%`, `%${search}%`, Number(limit), Number(offset)]
     const [ rows ] = await connection.query(query, values);
   
     const formattedRows = rows.map(row => ({
@@ -32,6 +33,7 @@ export class TaskModel {
       surnames: row.apellidos,
       typeStackId: row.tipo_tarea_id,
       state: row.estado,
+      codOt: row.cod_ot,
       typeStack: row.descripcion,
       creationDate: row.fecha_creacion ? format(new Date(row.fecha_creacion), 'dd-MM-yyyy HH:mm:ss') : 'Fecha no disponible',
       modificationDate: row.fecha_modificacion ? format(new Date(row.fecha_modificacion), 'dd-MM-yyyy HH:mm:ss') : 'Fecha no disponible'
@@ -47,10 +49,10 @@ export class TaskModel {
       'INNER JOIN grupo_miembro gp ON t.grupo_miembro_id = gp.id_grupo_miembro',
       'INNER JOIN usuario u ON gp.usuario_tecnico_id = u.id_usuario',
       'INNER JOIN tipo_tarea tt ON t.tipo_tarea_id = tt.id_tipo_tarea',
-      'WHERE gp.grupo_id = ? AND (u.nombres LIKE ? OR u.apellidos LIKE ?)',
+      'WHERE gp.grupo_id = ? AND (tt.cod_ot LIKE ? OR tt.descripcion LIKE ? OR u.apellidos LIKE ?)',
     ].join('\n')
   
-    const values = [groupId, `%${search}%`, `%${search}%`];
+    const values = [groupId, `%${search}%`, `%${search}%`, `%${search}%`];
   
     const [ rows ] = await connection.query(query, values);
     return rows[0].total;
@@ -62,6 +64,7 @@ export class TaskModel {
       't.id_tarea, ' ,
       't.grupo_miembro_id,',
       't.tipo_tarea_id, ',
+      'tt.cod_ot, ',
       'tt.descripcion, ',
       't.estado, ',
       't.fecha_inicio, ',
@@ -72,17 +75,18 @@ export class TaskModel {
       'INNER JOIN grupo_miembro gp ON t.grupo_miembro_id = gp.id_grupo_miembro',
       'INNER JOIN usuario u ON gp.usuario_tecnico_id = u.id_usuario',
       'INNER JOIN tipo_tarea tt ON t.tipo_tarea_id = tt.id_tipo_tarea',
-      'WHERE gp.grupo_id = ? AND gp.usuario_tecnico_id = ? AND (tt.descripcion LIKE ?)',
+      'WHERE gp.grupo_id = ? AND gp.usuario_tecnico_id = ? AND (tt.descripcion LIKE ? OR tt.cod_ot LIKE ?)',
       'ORDER BY t.fecha_creacion',
       'LIMIT ? OFFSET ?'
     ].join('\n');
-  
-    const values = [groupId, userTechnicianId, `%${search}%`, Number(limit), Number(offset)]
+    console.log("groupId, userTechnicianId: ", groupId, " - ", userTechnicianId)
+    const values = [groupId, userTechnicianId, `%${search}%`, `%${search}%`, Number(limit), Number(offset)]
     const [ rows ] = await connection.query(query, values);
   
     const formattedRows = rows.map(row => ({
       taskId: row.id_tarea,
       typetaskId: row.tipo_tarea_id,
+      codOt: row.cod_ot,
       typeTask: row.descripcion,
       stateTask: row.estado,
       startTask: row.fecha_inicio ? format(new Date(row.fecha_inicio), 'dd-MM-yyyy HH:mm:ss') : '',
@@ -101,10 +105,10 @@ export class TaskModel {
       'INNER JOIN grupo_miembro gp ON t.grupo_miembro_id = gp.id_grupo_miembro',
       'INNER JOIN usuario u ON gp.usuario_tecnico_id = u.id_usuario',
       'INNER JOIN tipo_tarea tt ON t.tipo_tarea_id = tt.id_tipo_tarea',
-      'WHERE gp.grupo_id = ? AND gp.usuario_tecnico_id = ? AND (tt.descripcion LIKE ?)',
+      'WHERE gp.grupo_id = ? AND gp.usuario_tecnico_id = ? AND (tt.descripcion LIKE ? OR tt.cod_ot LIKE ?)',
     ].join('\n')
   
-    const values = [groupId, userTechnicianId, `%${search}%`];
+    const values = [groupId, userTechnicianId, `%${search}%`, `%${search}%`];
   
     const [ rows ] = await connection.query(query, values);
     return rows[0].total;
@@ -147,7 +151,7 @@ export class TaskModel {
   }
   
   async createTask (connection, taskData){
-    const { groupStaffId, typeStackId, state } = taskData;
+    const {groupStaffId, typeTaskId } = taskData;
   
     const query = [
       'INSERT INTO',
@@ -155,10 +159,10 @@ export class TaskModel {
       '( grupo_miembro_id, ' ,
       'tipo_tarea_id, ',
       'estado) ',
-      'VALUES (?, ?, ?)'
+      'VALUES (?, ?, 1)'
     ].join('\n')
   
-    const values = [ groupStaffId, typeStackId, state ]
+    const values = [ groupStaffId, typeTaskId ]
   
     const result = await connection.query(query, values);
     return result;

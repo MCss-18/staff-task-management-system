@@ -7,6 +7,22 @@ export class GroupService {
     this.groupModel = new GroupModel()
   }
 
+  async getGroupsByMember(technicianUserId) {
+    let connection;
+    try {
+      connection = await pool.getConnection();
+      return await this.groupModel.getGroupsByMember(connection, technicianUserId);
+    } catch (error) {
+      console.error("Error SV - getGroupsByMember: ", error);
+      throw error;
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  }
+
+
   async getPaginatedGroups(limit, offset, search) {
     let connection;
     try {

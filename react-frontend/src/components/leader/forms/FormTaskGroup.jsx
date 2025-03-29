@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import Button from '../../common/Button';
 import groupMemberService from '../../../services/api/groupMemberService';
 import typeTaskService from '../../../services/api/typeTaskService';
+import taskService from '../../../services/api/taskService';
 
 function FormTaskGroup({ closeForm, groupId, onSave }) {
   const [errorMessage, setErrorMessage] = useState('');
@@ -24,7 +25,7 @@ function FormTaskGroup({ closeForm, groupId, onSave }) {
     };
   
     fetchMembers();
-  }, [groupId]); // Solo se ejecuta cuando groupId cambia
+  }, [groupId]); 
   
   useEffect(() => {
     const fetchTasks = async () => {
@@ -86,7 +87,7 @@ function FormTaskGroup({ closeForm, groupId, onSave }) {
       }
 
       // Aquí enviarías taskList al backend
-      // await groupService.createGroup(formData, taskList);
+      await taskService.createTask(taskList);
 
       closeForm();
       if (onSave) onSave();
@@ -111,7 +112,7 @@ function FormTaskGroup({ closeForm, groupId, onSave }) {
         <div className="group-form">
           <div className="subgroup-form">
             <label htmlFor="memberSelect">Seleccionar técnico *</label>
-            <select id="memberSelect" value={selectedMember} onChange={(e) => setSelectedMember(Number(e.target.value))} required>
+            <select id="memberSelect" value={selectedMember} onChange={(e) => setSelectedMember(Number(e.target.value))}>
               <option value="">Seleccione un técnico</option>
               {members.map((member) => (
                 <option key={member.groupStaffId} value={member.groupStaffId}>
@@ -122,7 +123,7 @@ function FormTaskGroup({ closeForm, groupId, onSave }) {
           </div>
           <div className="subgroup-form">
             <label htmlFor="taskSelect">Seleccionar tarea *</label>
-            <select id="taskSelect" value={selectedTask} onChange={(e) => setSelectedTask(Number(e.target.value))} required>
+            <select id="taskSelect" value={selectedTask} onChange={(e) => setSelectedTask(Number(e.target.value))}>
               <option value="">Seleccione una tarea</option>
               {tasks.map((task) => (
                 <option key={task.typeTaskId} value={task.typeTaskId}>

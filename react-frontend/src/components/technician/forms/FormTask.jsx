@@ -144,6 +144,7 @@ function FormTask({ closeForm, taskId, initialData, onSave }) {
                   type="time"
                   value={newDelay.startTime}
                   onChange={(e) => setNewDelay({ ...newDelay, startTime: e.target.value })}
+                  required
                 />
               </div>
               <div className="subgroup-form">
@@ -153,6 +154,7 @@ function FormTask({ closeForm, taskId, initialData, onSave }) {
                   type="time"
                   value={newDelay.endTime}
                   onChange={(e) => setNewDelay({ ...newDelay, endTime: e.target.value })}
+                  required
                 />
               </div>
               <div className="subgroup-form">
@@ -164,11 +166,10 @@ function FormTask({ closeForm, taskId, initialData, onSave }) {
                 <textarea 
                   id="observation"
                   name="observation"
-                  placeholder='Observación'
+                  placeholder='Observación (max. 200 caracteres)'
                   value={newDelay.observation}
                   onChange={(e) => setNewDelay({ ...newDelay, observation: e.target.value })}
-                  maxLength={500} 
-                  required
+                  maxLength={200} 
                 />
               </div>
               <div className="subgroup-form">

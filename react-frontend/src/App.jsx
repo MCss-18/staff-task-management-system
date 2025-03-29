@@ -15,6 +15,8 @@ import DashboardPageAdmin from './pages/admin/DashboardPageAdmin';
 import GroupPageAdmin from './pages/admin/GroupPageAdmin';
 import UserPageAdmin from './pages/admin/UserPageAdmin';
 import DetailsByGroupAdmin from './components/admin/modal/DetailsByGroupAdmin';
+import GroupPage from './pages/technician/GroupPage';
+import NotFoundPage from './pages/errors/NotFoundPage';
 
 const ProtectedRoute = ({ allowedRoles, children }) => {
   const { isAuthenticated, user} = useAuthStore();
@@ -105,10 +107,11 @@ function App() {
           </ProtectedRoute>
         }
       >
+        <Route path="" element={<GroupPage />}/>
         <Route path="tareas" element={<TasksPage />}/>
       </Route>
 
-      {/* <Route path="*" element={ <NotFoundPage/> } /> */}
+      <Route path="*" element={ <NotFoundPage/> } />
     </Routes>
   )
 }

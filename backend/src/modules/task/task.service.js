@@ -72,9 +72,15 @@ export class TaskService {
     let connection;
     try {
       connection = await pool.getConnection();
+      console.log("taskData: ", taskData)
+      for (const task of taskData) {
+        const { user, task: taskInfo } = task;
+        await this.taskModel.createTask(connection, {
+          groupStaffId: user.groupStaffId,
+          typeTaskId: taskInfo.typeTaskId
+        });
+      }
       
-      return await this.taskModel.createTask(connection, taskData)
-
     } catch (error) {
       console.error("Error SV - createTask: ", error)
       throw error

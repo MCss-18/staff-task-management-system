@@ -43,6 +43,7 @@ function TableTasksByUser({ tasks, onUpdate }) {
         <thead>
           <tr>
             <th></th>
+            <th>CODIGO</th>
             <th>DESCRIPCION</th>
             <th>ESTADO</th>
             <th>HORA INICIO</th>
@@ -54,6 +55,7 @@ function TableTasksByUser({ tasks, onUpdate }) {
           {tasks.map((task, index) => (
             <tr key={task.taskId}>
               <td>{index+1}</td>
+              <td>{task.codOt}</td>
               <td>{task.typeTask}</td>
               <td>
                 <TagTable state={task.stateTask} type={2} />

@@ -2,6 +2,36 @@ import { format } from "date-fns";
 
 export class GroupModel {
 
+  async getGroupsByMember(connection, technicianUserId) {
+    const query = `
+      SELECT 
+        g.id_grupo, 
+        g.usuario_lider_id, 
+        u.nombres, 
+        u.apellidos, 
+        g.descripcion, 
+        g.estado
+      FROM grupo g
+      INNER JOIN usuario u ON g.usuario_lider_id = u.id_usuario
+      INNER JOIN grupo_miembro gm ON g.id_grupo = gm.grupo_id
+      WHERE gm.usuario_tecnico_id = ? 
+      ORDER BY g.descripcion ASC
+    `;
+  
+    const values = [technicianUserId];
+    const [rows] = await connection.query(query, values);
+  
+    return rows.map(row => ({
+      groupId: row.id_grupo,
+      leadUserId: row.usuario_lider_id,
+      nameGroup: row.descripcion,
+      nameLead: row.nombres,
+      surnameLead: row.apellidos,
+      state: row.estado,
+      memberCount: row.cantidad_miembros
+    }));
+  }
+
   async getPaginatedGroups(connection, limit, offset, search) {
     const query = `
       SELECT 

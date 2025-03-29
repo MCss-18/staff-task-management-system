@@ -3,6 +3,25 @@ import { GroupService } from "./group.service.js";
 
 export class GroupController {
 
+  async getGroupsByMember(req, res) {
+    try {
+      const { technicianUserId } = req.params;
+      let groupService = new GroupService();
+      const groups = await groupService.getGroupsByMember(technicianUserId);
+      console.log("groups: ", groups)
+      return res.status(HTTPSTATUS.OK).json({
+        message: "Groups successfully obtained",
+        groups: groups
+      });
+    } catch (error) {
+      console.log("Error CTRL - getGroupsByMember: ", error)
+      res.status(HTTPSTATUS.INTERNAL_SERVER_ERROR).json({ 
+        success: false,
+        message: "Error al obtener los grupos", error 
+      });
+    }
+  }
+
   async getPaginatedGroups(req, res) {
     try {
       let groupService = new GroupService();

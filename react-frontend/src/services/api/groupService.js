@@ -6,6 +6,8 @@ class GroupService {
 
   groupListPagByLeader = (leadUserId, page=1, search="") => api.get(`/api/v1/group/by-lead/${leadUserId}?page=${page}&limit=12&search=${search}`)
 
+  groupListByMember = (leadUserId) => api.get(`/api/v1/group/by-member/${leadUserId}`)
+
   createGroup = (groupData) => api.post(`/api/v1/group`, {groupData: groupData})
   
   updateGroup = (groupId, groupData) => api.put(`/api/v1/group/${groupId}`, {groupData: groupData})

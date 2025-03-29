@@ -68,9 +68,9 @@ export class TaskController {
   async createTask(req, res) {
     try {
       let taskService = new TaskService();
-      const { taskData } = req.body;
+      const { taskList } = req.body;
       
-      await taskService.createTask(taskData);
+      await taskService.createTask(taskList);
       
       res.status(HTTPSTATUS.OK).json({ 
         success: true, 

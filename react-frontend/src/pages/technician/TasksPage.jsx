@@ -5,6 +5,7 @@ import Pagination from '../../components/common/Pagination'
 import taskService from '../../services/api/taskService';
 import { useAuthStore } from '../../store/useStore';
 import InputIcon from '../../components/common/InputIcon';
+import { useLocation } from 'react-router-dom';
 
 function TasksPage() {
   const { user } = useAuthStore();
@@ -14,9 +15,13 @@ function TasksPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
 
+  const location = useLocation();
+  const groupId = location.state?.groupId;
+
+
   const fetchData = async(page = 1, search = searchTerm) => {
     try {
-      const response = await taskService.taskListPagByGroupAndUserTech(1, user.userId, page, search);
+      const response = await taskService.taskListPagByGroupAndUserTech(groupId, user.userId, page, search);
       setTasks(response.data.tasks);
       setTotalRecords(response.data.total);
       setCurrentPage(response.data.page);
@@ -42,9 +47,15 @@ function TasksPage() {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (groupId) {
+      fetchData();
+    }
+  }, [groupId]);
 
+  if (!groupId) {
+    return <section>Error: No se encontró el grupo.</section>;
+  }
+  
   return (
     <section>
       <div className='header-section'>
