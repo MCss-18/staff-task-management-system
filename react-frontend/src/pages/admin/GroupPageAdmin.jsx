@@ -12,8 +12,10 @@ function GroupPageAdmin() {
   const [groups, setGroups] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
 
   const fetchData = async(page = 1, search = searchTerm) => {
+    setIsLoading(true)
     try {
       const response = await groupService.groupListPag(page, search);
       setGroups(response.data.groups);
@@ -21,6 +23,8 @@ function GroupPageAdmin() {
       setCurrentPage(response.data.page);
     } catch (error){
       console.error("Errro fetching groups: ", error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -66,6 +70,7 @@ function GroupPageAdmin() {
           <TableGroup 
             groups={groups} 
             onUpdate={handleSave} 
+            isLoading={isLoading}
           />
           <Pagination
             currentPage={currentPage}

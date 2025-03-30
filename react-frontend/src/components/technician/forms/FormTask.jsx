@@ -6,6 +6,26 @@ import Toggle from "../../common/Toggle";
 import delayTaskService from "../../../services/api/delayTaskService";
 import ConfirmDialog from "../../common/ConfirmDialog";
 import SelectCategoryDelay from "../others/SelectCategoryDelay";
+import Table from "../../common/Table";
+
+const columns = [
+  { 
+    key: "startTime", 
+    label: "INICIO"
+  },
+  { 
+    key: "endTime", 
+    label: "FIN" 
+  },
+  { 
+    key: "descripcionDelay", 
+    label: "TIPO",
+  },
+  { 
+    key: "observation", 
+    label: "OBS" 
+  }
+];
 
 function FormTask({ closeForm, taskId, initialData, onSave }) {
   const [formData, setFormData] = useState({
@@ -184,26 +204,11 @@ function FormTask({ closeForm, taskId, initialData, onSave }) {
           <div className="group-form tbl-delay">
             <div className="subgroup-form">
             <h3 className="text-lg font-semibold text-gray-700 mb-2">Lista de demoras registradas</h3>
-            <table className="w-full border border-gray-200 rounded-lg shadow-sm">
-                <thead className="bg-gray-100 text-gray-700 uppercase text-sm">
-                  <tr>
-                    <th className="py-2 px-4 border-b">Inicio</th>
-                    <th className="py-2 px-4 border-b">Fin</th>
-                    <th className="py-2 px-4 border-b">Tipo</th>
-                    <th className="py-2 px-4 border-b">Obs.</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {formData.delays.map((delay, index) => (
-                    <tr key={index}>
-                      <td>{delay.startTime}</td>
-                      <td>{delay.endTime}</td>
-                      <td>{delay.descripcionDelay}</td>
-                      <td>{delay.observation}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <Table
+              columns={columns}
+              data={formData.delays}
+              isLoading={isLoading}
+            />
             </div>
           </div>
         )}

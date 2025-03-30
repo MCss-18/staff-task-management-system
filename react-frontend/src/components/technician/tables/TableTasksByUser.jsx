@@ -2,10 +2,38 @@ import React, { useEffect, useRef, useState } from 'react'
 import TagTable from '../../common/TagTable';
 import PropTypes from 'prop-types';
 import { PencilLine } from 'lucide-react';
-import '../../../styles/st-table.css';
 import FormTask from '../forms/FormTask';
+import Table from '../../common/Table';
 
-function TableTasksByUser({ tasks, onUpdate }) {
+const columns = [
+  { 
+    key: "codOt", 
+    label: "CODIGO OT"
+  },
+  { 
+    key: "typeTask", 
+    label: "DESCRIPCION" 
+  },
+  { 
+    key: "stateTask", 
+    label: "ESTADO",
+    render: (value) => <TagTable state={value} type={2} />
+  },
+  { 
+    key: "startTask", 
+    label: "HORA INICIO" 
+  },
+  { 
+    key: "endTask", 
+    label: "HORA FIN" 
+  },
+  { 
+    key: "creationDate", 
+    label: "CREACION" 
+  }
+];
+
+function TableTasksByUser({ tasks, onUpdate, isLoading }) {
 
   const [showForm, setShowForm] = useState(false);
   const [ selectedTask, setSelectedTask ] = useState(null);
@@ -38,39 +66,22 @@ function TableTasksByUser({ tasks, onUpdate }) {
   }
 
   return (
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>CODIGO</th>
-            <th>DESCRIPCION</th>
-            <th>ESTADO</th>
-            <th>HORA INICIO</th>
-            <th>HORA FIN</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {tasks.map((task, index) => (
-            <tr key={task.taskId}>
-              <td>{index+1}</td>
-              <td>{task.codOt}</td>
-              <td>{task.typeTask}</td>
-              <td>
-                <TagTable state={task.stateTask} type={2} />
-              </td>
-              <td>{task.startTask}</td>
-              <td>{task.endTask}</td>
-              <td>
-                <button onClick={() => openForm(task)}>
-                  <PencilLine />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <>
+      <Table
+        columns={columns}
+        data={tasks}
+        isLoading={isLoading}
+        actionButton={(task) => (
+          <div className='flex gap-2 relative'>
+            <button 
+              onClick={() => openForm(task)}
+              className="p-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-500 hover:text-yellow-700 rounded-md btn-tooltip"
+            >
+              <PencilLine />
+            </button>
+          </div>
+        )}
+      />
       {showForm && selectedTask && (
         <div className="overlay" ref={overlayRef}>
           <FormTask
@@ -81,12 +92,13 @@ function TableTasksByUser({ tasks, onUpdate }) {
           />
         </div>
       )}
-    </div>
+    </>
   );
 }
 
 TableTasksByUser.propTypes = {
   tasks: PropTypes.array.isRequired,
+  isLoading: PropTypes.func.isRequired,
   onUpdate: PropTypes.func
 };
 

@@ -1,13 +1,13 @@
-import { Paperclip } from 'lucide-react'
+import { UsersRound } from 'lucide-react'
 import Sidebar from '../common/Sidebar';
 
 const NavbarTechnician = () => {
   const items = [
     {
       id: 1,
-      title: "Tareas",
-      url: "tareas",
-      icon: Paperclip,
+      title: "Grupos",
+      url: "",
+      icon: UsersRound,
     },
   ];
 

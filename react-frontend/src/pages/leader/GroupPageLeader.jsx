@@ -19,8 +19,10 @@ function GroupPageLeader() {
   const [totalRecords, setTotalRecords] = useState(0);
   const [showForm, setShowForm] = useState(false);
   const overlayRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchData = async(page = 1, search = searchTerm) => {
+    setIsLoading(true)
     try {
       const response = await groupService.groupListPagByLeader(user.userId, page, search);
       setGroups(response.data.groups);
@@ -28,6 +30,8 @@ function GroupPageLeader() {
       setCurrentPage(response.data.page);
     } catch (error){
       console.error("Errro fetching groups: ", error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -98,12 +102,12 @@ function GroupPageLeader() {
           </IconButton>
         </div>
       </div>
-
       <div className='body-section'>
         <div className="container-table">
           <TableGroupByLeader 
             groups={groups} 
             onUpdate={handleSave} 
+            isLoading={isLoading}
           />
           <Pagination
             currentPage={currentPage}

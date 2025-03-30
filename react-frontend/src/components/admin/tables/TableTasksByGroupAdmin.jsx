@@ -2,8 +2,35 @@ import React, { useEffect, useRef, useState } from 'react'
 import TagTable from '../../common/TagTable';
 import { Eye } from 'lucide-react';
 import PropTypes from 'prop-types';
+import Table from '../../common/Table';
 
-function TableTasksByGroupAdmin({ tasks }) {
+const columns = [
+  { 
+    key: "codOt", 
+    label: "CODIGO OT"
+  },
+  { 
+    key: "typeStack", 
+    label: "TAREA" 
+  },
+  { 
+    key: "surnames", 
+    label: "RESPONSABLE",
+    render: (_,row) => `${row?.surnames ?? 'N/A'}, ${row?.names ?? 'N/A'}` 
+  },
+  { 
+    key: "state", 
+    label: "ESTADO",
+    render: (value) => <TagTable state={value} type={2} />
+  },
+  { 
+    key: "creationDate", 
+    label: "CREACION" 
+  }
+];
+
+
+function TableTasksByGroupAdmin({ tasks, isLoading }) {
 
   const [ selectedTask, setSelectedTask] = useState(null);
   const [showModalTask, setShowModalTask] = useState(false);
@@ -36,46 +63,34 @@ function TableTasksByGroupAdmin({ tasks }) {
   }
 
   return (
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>Tarea</th>
-            <th>RESPONSABLE</th>
-            <th>ESTADO</th>
-            <th>CREACION</th>
-            <th >
-              ACCIONES
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {tasks.map((task, index) => (
-            <tr key={task.taskId}>
-              <td>{index + 1}</td>
-              <td>{task.typeStack}</td>
-              <td>{task.surnames}, {task.names}</td>
-              <td>
-                <TagTable state={task.state} type={2} />
-              </td>
-              <td>{task.creationDate}</td>
-              <td className='flex gap-2'>
-                <button onClick={() => openModal(task)}>
-                  <Eye />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      
-    </div>
+    <>
+    <Table
+      columns={columns}
+      data={tasks}
+      isLoading={isLoading}
+      actionButton={(task) => (
+        <div className='flex gap-2 relative'>
+          <button 
+            className="p-1 bg-blue-100 hover:bg-blue-200 text-blue-500 hover:text-blue-700 rounded-md btn-tooltip"
+          >
+            <Eye />
+            <span className="tooltip-text">Ver demoras</span>
+          </button>
+        </div>
+      )}
+    />
+    {showModalTask && selectedTask && (
+      <div className="overlay" >
+  
+      </div>
+    )}
+  </>
   );
 }
 
 TableTasksByGroupAdmin.propTypes = {
-  tasks: PropTypes.array.isRequired
+  tasks: PropTypes.array.isRequired,
+  isLoading: PropTypes.bool.isRequired
 };
 
 export default TableTasksByGroupAdmin

@@ -53,4 +53,37 @@ export class TaskDelayService {
       connection?.release();
     }
   }
+
+  async getTaskDelayByGroupAndUser(groupStaffId){
+    let connection;
+    try {
+      connection = await pool.getConnection();
+      return await this.taskDelayModel.getTaskDelayByGroupAndUser(connection, groupStaffId)
+
+    } catch (error) {
+      console.log("Error SV - getTaskDelayByGroupAndUser: ", error)
+      throw error
+    } finally {
+      if (connection) {
+        connection.release()
+      }
+    }
+  }
+
+  async getTaskDelayByGroup(groupId){
+    let connection;
+    try {
+      connection = await pool.getConnection();
+      return await this.taskDelayModel.getTaskDelayByGroup(connection, groupId)
+
+    } catch (error) {
+      console.log("Error SV - getTaskDelayByGroup: ", error)
+      throw error
+    } finally {
+      if (connection) {
+        connection.release()
+      }
+    }
+  }
+
 }

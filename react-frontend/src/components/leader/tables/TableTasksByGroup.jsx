@@ -2,18 +2,42 @@ import React, { useEffect, useRef, useState } from 'react'
 import TagTable from '../../common/TagTable';
 import { Eye, Trash2 } from 'lucide-react';
 import PropTypes from 'prop-types';
+import Table from '../../common/Table';
+import taskService from '../../../services/api/taskService';
+import DialogAdvertaising from '../others/DialogAdvertaising';
 
-function TableTasksByGroup({ tasks }) {
+const columns = [
+  { 
+    key: "codOt", 
+    label: "CODIGO OT"
+  },
+  { 
+    key: "typeStack", 
+    label: "TAREA" 
+  },
+  { 
+    key: "surnames", 
+    label: "RESPONSABLE",
+    render: (_,row) => `${row?.surnames ?? 'N/A'}, ${row?.names ?? 'N/A'}` 
+  },
+  { 
+    key: "state", 
+    label: "ESTADO",
+    render: (value) => <TagTable state={value} type={2} />
+  },
+  { 
+    key: "creationDate", 
+    label: "CREACION" 
+  }
+];
 
-  const [showForm, setShowForm] = useState(false);
+function TableTasksByGroup({ tasks, isLoading, onSave }) {
+
   const [ selectedTask, setSelectedTask] = useState(null);
   const [showModalTask, setShowModalTask] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
   const overlayRef = useRef(null);
 
-  const openForm = (group) => {
-    setSelectedTask(group);
-    setShowForm(true);
-  };
 
   const openModal = (group) => {
     setSelectedTask(group);
@@ -21,7 +45,6 @@ function TableTasksByGroup({ tasks }) {
   };
 
   const closeForm = () => {
-    setShowForm(false)
     setShowModalTask(false)
   };
 
@@ -38,55 +61,65 @@ function TableTasksByGroup({ tasks }) {
     };
   }, [closeForm]);
 
-  if (!tasks) {
-    return <div>Cargando...</div>;
-  }
+  const handleDeleteClick = (task) => {
+    setSelectedTask(task);
+    setShowDialog(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!selectedTask) return;
+
+    try {
+      await taskService.deleteTask(selectedTask.taskId);
+      if (onSave) onSave();
+    } catch (error) {
+      console.error("Error eliminando el ítem:", error);
+    }
+
+    setShowDialog(false);
+  };
 
   return (
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>TAREA</th>
-            <th>RESPONSABLE</th>
-            <th>ESTADO</th>
-            <th>CREACION</th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {tasks.map((task, index) => (
-            <tr key={task.taskId}>
-              <td>{index + 1}</td>
-              <td>{task.typeStack}</td>
-              <td>{task.surnames}, {task.names}</td>
-              <td>
-                <TagTable state={task.state} type={2} />
-              </td>
-              <td>{task.creationDate}</td>
-              <td>
-                <button onClick={() => openModal(task)}>
-                  <Eye />
-                </button>
-              </td>
-              <td>
-                <button onClick={() => openModal(task)}>
-                  <Trash2 />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      
-    </div>
+    <>
+      <Table
+        columns={columns}
+        data={tasks}
+        isLoading={isLoading}
+        actionButton={(task) => (
+          <div className='flex gap-2 relative'>
+            <button 
+              className="p-1 bg-blue-100 hover:bg-blue-200 text-blue-500 hover:text-blue-700 rounded-md btn-tooltip"
+            >
+              <Eye />
+              <span className="tooltip-text">Ver demoras</span>
+            </button>
+            <button 
+              onClick={() => handleDeleteClick(task)}
+              className="p-1 bg-red-100 hover:bg-red-200 text-red-500 hover:text-red-700 rounded-md btn-tooltip"
+            >
+              <Trash2 />
+              <span className="tooltip-text">Eliminar tarea</span>
+            </button>
+          </div>
+        )}
+      />
+      {showDialog && selectedTask && (
+        <div className="overlay" >
+          <DialogAdvertaising
+            onClose={() => setShowDialog(false)}
+            onConfirm={handleConfirmDelete}
+            task={selectedTask}
+          />
+        </div>
+      )}
+    </>
   );
 }
 
 TableTasksByGroup.propTypes = {
-  tasks: PropTypes.array.isRequired
+  tasks: PropTypes.array.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  onSave: PropTypes.func,
 };
 
 export default TableTasksByGroup

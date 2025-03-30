@@ -1,11 +1,13 @@
 import { pool } from "../../database/database.js";
 import { TaskModel } from "../../database/models/task.model.js";
+import { TaskDelayModel } from "../../database/models/taskDelay.model.js";
 
 
 export class TaskService {
 
   constructor() {
     this.taskModel = new TaskModel();
+    this.taskDelayModel = new TaskDelayModel();
   }
 
   async getPaginatedTaskByGroupId(groupId, limit, offset, search) {
@@ -109,6 +111,8 @@ export class TaskService {
     let connection;
     try {
       connection = await pool.getConnection();
+
+      await this.taskDelayModel.deleteTaskDelay(connection, taskId);
 
       return await this.taskModel.deleteTask(connection, taskId);
     } catch (error) {

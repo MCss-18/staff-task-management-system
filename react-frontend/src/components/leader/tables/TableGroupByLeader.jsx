@@ -3,13 +3,40 @@ import FormGroup from '../forms/FormGroup';
 import TagTable from '../../common/TagTable';
 import { Eye, PencilLine } from 'lucide-react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import Table from '../../common/Table';
 
-function TableGroupByLeader({ groups, onUpdate }) {
+const columns = [
+  { 
+    key: "nameGroup", 
+    label: "GRUPO"
+  },
+  { 
+    key: "memberCount", 
+    label: "N° MIEMBROS" 
+  },
+  { 
+    key: "userSurnames", 
+    label: "RESPONSABLE",
+    render: (_,row) => `${row?.userSurnames ?? 'N/A'}, ${row?.userNames ?? 'N/A'}` 
+  },
+  { 
+    key: "state", 
+    label: "ESTADO",
+    render: (value) => <TagTable state={value} type={1} />
+  },
+  { 
+    key: "creationDate", 
+    label: "CREACION" 
+  }
+];
+
+function TableGroupByLeader({ groups, onUpdate, isLoading }) {
 
   const [showForm, setShowForm] = useState(false);
   const [ selectedGroup, setSelectedGroup] = useState(null);
   const overlayRef = useRef(null);
+  const navigate = useNavigate();
 
   const openForm = (group) => {
     setSelectedGroup(group);
@@ -33,47 +60,30 @@ function TableGroupByLeader({ groups, onUpdate }) {
     };
   }, [closeForm]);
 
-  if (!groups) {
-    return <div>Cargando...</div>;
-  }
-
+  
   return (
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>GUPO</th>
-            <th>MIEMBROS</th>
-            <th>ESTADO</th>
-            <th>CREACION</th>
-            <th >
-              ACCIONES
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {groups.map((group) => (
-            <tr key={group.groupId}>
-              <td>{group.groupId}</td>
-              <td>{group.nameGroup}</td>
-              <td>{group.memberCount}</td>
-              <td>
-                <TagTable state={group.state} type={1} />
-              </td>
-              <td>{group.creationDate}</td>
-              <td className='flex gap-2'>
-                <button onClick={() => openForm(group)}>
-                  <PencilLine />
-                </button>
-                <Link className='p-2 bg-slate-600' to={`detalles/${group.groupId}`}>
-                  <Eye />
-                </Link>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <>
+      <Table
+        columns={columns}
+        data={groups}
+        isLoading={isLoading}
+        actionButton={(group) => (
+          <div className='flex gap-2 relative'>
+            <button 
+              onClick={() => openForm(group)}
+              className="p-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-500 hover:text-yellow-700 rounded-md btn-tooltip"
+            >
+              <PencilLine />
+            </button>
+            <button 
+              onClick={() => navigate("detalles", { state: { groupId: group.groupId } })}
+              className="p-1 bg-blue-100 hover:bg-blue-200 text-blue-500 hover:text-blue-700 rounded-md btn-tooltip"
+            >
+              <Eye />
+            </button>
+          </div>
+        )}
+      />
       {showForm && selectedGroup && (
         <div className="overlay" ref={overlayRef}>
           <FormGroup
@@ -85,13 +95,13 @@ function TableGroupByLeader({ groups, onUpdate }) {
           />
         </div>
       )}
-    
-    </div>
+    </>
   );
 }
 
 TableGroupByLeader.propTypes = {
   groups: PropTypes.array.isRequired,
+  isLoading: PropTypes.bool.isRequired,
   onUpdate: PropTypes.func
 };
 

@@ -12,8 +12,7 @@ class TaskService {
   updateTaskEnd = (taskId) => api.put(`/api/v1/task/end-date/${taskId}`) 
   
   
-  // createTaskDelayStart = (taskId, taskDelayData) => api.put(`/api/v1/task/delay-start${taskId}`, { taskDelayData: taskDelayData })  
-  // createTaskDelayEnd = (taskId, taskDelayData) => api.put(`/api/v1/task/delay-end${taskId}`, { taskDelayData: taskDelayData })  
+  deleteTask = (taskId) => api.delete(`/api/v1/task/${taskId}`)  
 }
 
 const taskService = new TaskService();

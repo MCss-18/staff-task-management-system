@@ -14,9 +14,9 @@
 
   --background: #F9FAFB;
   
-  --text-primary: #101828;
-  --text-secondary: #344054;
-  --text-tertiary: #576a87;
+  --text-primary: #181818;
+  --text-secondary: #2F2F2F;
+  --text-tertiary: #474747;
 
   --bg-input: #f9ffe9;
   --bg-input-disabled: #A8B1CE;
@@ -25,20 +25,20 @@
   
   --border: #f1f1f2;
 
-  --blue-500: #202939;
-  --blue-400: #364152;
+  --blue-500: #181818;
+  --blue-400: #2F2F2F;
   --light-blue: #F8FAFC;
 
-  --red-500: #F04438;
-  --red-400: #F97066;
-  --red-100: #FEE4E2;
+  --red-500: #A71B22;
+  --red-400: #BD1F25;
+  --red-100: #D12329;
 
   --green-500: #17B26A;
   --green-400: #47CD89;  
   --green-100: #DCFAE6;  
 
   --bg-form: #ffffff;
-  --bg-nav: #191D20;
+  --bg-nav: #181818;
   --bg-header: #ffffff;
   --bg-table: #fafafa;
 
@@ -233,6 +233,10 @@ button {
   font-size: var(--text-sm);
 }
 
+/* button {
+  @apply bg-blue-500 text-white rounded-md px-6 py-2 text-sm flex items-center justify-center gap-2 transition duration-300 ease-in-out hover:bg-blue-400 disabled:bg-gray-500 disabled:text-gray-200 disabled:cursor-not-allowed;
+} */
+
 button:hover {
   background-color: var(--blue-400);
 }
@@ -243,7 +247,7 @@ button:disabled {
   opacity: 1;
 }
 
-button.btn-navbar{
+/* button.btn-navbar{
   z-index: 4;
   width: 10px;
   height: 25px;
@@ -270,6 +274,34 @@ button.btn-tab.active{
 
 button.btn-tab:hover{
   border-bottom: 1px solid var(--blue-400);
+} */
+
+.btn-tooltip {
+  position: relative;
+  cursor: pointer;
+}
+
+.tooltip-text {
+  display: none;
+  width: 120px;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  text-align: center;
+  padding: 5px;
+  border-radius: 5px;
+  position: absolute;
+  top: -35px;
+  right: 50%;
+  transform: translateX(50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.btn-tooltip:hover .tooltip-text {
+  display: block;
+  opacity: 1;
 }
 
 svg{

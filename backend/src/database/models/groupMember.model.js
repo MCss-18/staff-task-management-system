@@ -7,6 +7,7 @@ export class GroupMemberModel {
       'SELECT ',
       'gp.id_grupo_miembro, ' ,
       'gp.grupo_id, ' ,
+      'p.id_usuario, ' ,
       'p.nombres, ' ,
       'p.apellidos, ' ,
       'gp.fecha_creacion, ',

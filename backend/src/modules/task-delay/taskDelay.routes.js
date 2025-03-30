@@ -8,4 +8,8 @@ taskDelayRoutes.get("/all-by-task/:taskId", taskDelayController.getTaskDelayByTa
 taskDelayRoutes.post("/", taskDelayController.createTaskDelay);
 taskDelayRoutes.delete("/:taskId", taskDelayController.deleteTaskDelay);
 
+taskDelayRoutes.get("/by-group-user/:groupStaffId", taskDelayController.getTaskDelayByGroupAndUser);
+
+taskDelayRoutes.get("/by-group/:groupId", taskDelayController.getTaskDelayByGroup);
+
 export default taskDelayRoutes;

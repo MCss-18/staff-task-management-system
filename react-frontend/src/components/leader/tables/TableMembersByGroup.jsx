@@ -1,27 +1,56 @@
-import { Eye } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types';
+import { exportToExcel } from '../../../utils/exportToExcel';
+import delayTaskService from '../../../services/api/delayTaskService';
+import Table from '../../common/Table';
+import { Download } from 'lucide-react';
+import { getFormattedDateTime } from '../../../utils/dateHourNow';
 
-function TableMembersByGroup({members}) {
+const columns = [
+  { 
+    key: "surnames", 
+    label: "APELLIDOS Y NOMBRES",
+    render: (_, row) => `${row?.surnames ?? 'N/A'}, ${row?.names ?? 'N/A'}` 
+  },
+  { 
+    key: "creationDate", 
+    label: "CREACION" 
+  }
+];
 
-  const [showForm, setShowForm] = useState(false);
-  const [ selectedMember, setSelectedMember] = useState(null);
-  const [showModalMember, setShowModalMember] = useState(false);
+const TableMembersByGroup =({members, isLoading}) => {
+
+  const [ selectedMember, setSelectedMember ] = useState(null);
+  const [ showModalMember, setShowModalMember ] = useState(false);
   const overlayRef = useRef(null);
-
-  const openForm = (member) => {
-    setSelectedMember(member);
-    setShowForm(true);
-  };
 
   const openModal = (group) => {
     setSelectedMember(group);
     setShowModalMember(true);
   };
 
+  const exportTaskDelayByUserExcel = async (member) => {
+    try {
+      const response = await delayTaskService.taskDelayByGroupAndUser(member.groupStaffId )
+      return response.data.tasksDelay
+    } catch (error){
+      console.error('Error exporting tasks:', error)
+      return [];
+    } 
+  }
+
   const closeForm = () => {
-    setShowForm(false)
     setShowModalMember(false)
+  };
+
+  const handleDownload = async (member) => {
+    try {
+      const data = await exportTaskDelayByUserExcel(member);
+      const formattedDateTime = getFormattedDateTime()
+      exportToExcel(data, `tareas-demoras-${member.surnames}-${member.names} - ${formattedDateTime}.xlsx`);
+    } catch (error) {
+      console.error('Error exporting tasks:', error);
+    }
   };
 
   useEffect(() => {
@@ -37,48 +66,37 @@ function TableMembersByGroup({members}) {
     };
   }, [closeForm]);
 
-  if (!members) {
-    return <div>Cargando...</div>;
-  }
 
   return (
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>MIEMBRO</th>
-            <th>CREACION</th>
-            <th >
-              ACCIONES
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {members.map((member, index) => (
-            <tr key={member.groupStaffId}>
-              <td>{index + 1}</td>
-              <td>{member.surnames}, {member.names}</td>
-              <td>{member.creationDate}</td>
-              <td className='flex gap-2'>
-                <button onClick={() => openModal(member)}>
-                  <Eye />
-                </button>
-                {/* <button onClick={() => openModal(member)}>
-                  <Trash2 />
-                </button> */}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      
-    </div>
-  );
+    <>
+      <Table
+        columns={columns}
+        data={members}
+        isLoading={isLoading}
+        actionButton={(member) => (
+          <div className='flex gap-2 relative'>
+            <button 
+              onClick={() => handleDownload(member)} 
+              className="p-1 bg-green-100 hover:bg-green-200 text-green-500 hover:text-green-700 rounded-md btn-tooltip"
+            >
+              <Download />
+              <span className="tooltip-text">Descargar Demoras</span>
+            </button>
+          </div>
+        )}
+      />
+      {showModalMember && (
+        <div className="overlay" >
+     
+        </div>
+      )}
+    </>
+  )
 }
 
 TableMembersByGroup.propTypes = {
-  members: PropTypes.array.isRequired
+  members: PropTypes.array.isRequired,
+  isLoading: PropTypes.bool.isRequired,
 };
 
 export default TableMembersByGroup

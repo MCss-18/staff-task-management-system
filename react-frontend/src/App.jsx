@@ -25,9 +25,9 @@ const ProtectedRoute = ({ allowedRoles, children }) => {
   }
 
   if (!allowedRoles.includes(user.rolId)) {
-    if (user.rolId === 1) return <Navigate to="/admin/dashboard" replace />;
-    if (user.rolId === 2) return <Navigate to="/lider/grupos" replace />;
-    if (user.rolId === 3) return <Navigate to="/tecnico/tareas" replace />;
+    if (user.rolId === 1) return <Navigate to="/gerencia/dashboard" replace />;
+    if (user.rolId === 2) return <Navigate to="/supervisor/grupos" replace />;
+    if (user.rolId === 3) return <Navigate to="/inspector" replace />;
   }
 
   return children;
@@ -38,15 +38,15 @@ const RedirectAuthenticatedUser = ({ children }) => {
   
   if (isAuthenticated) {
     if (user.rolId === 1) {
-      return <Navigate to="/admin/dashboard" replace />;
+      return <Navigate to="/gerencia/dashboard" replace />;
     }
 
     if (user.rolId === 2) {
-      return <Navigate to="/lider/grupos" replace />;
+      return <Navigate to="/supervisor/grupos" replace />;
     }
 
     if (user.rolId === 3) {
-      return <Navigate to="/tecnico/tareas" replace />;
+      return <Navigate to="/inspector" replace />;
     }
   }
 
@@ -73,7 +73,7 @@ function App() {
         }
       />
       <Route 
-        path="/admin" 
+        path="/gerencia" 
         element={
           <ProtectedRoute allowedRoles={[1]}>
             <LayoutAdmin/>
@@ -82,12 +82,12 @@ function App() {
       >
         <Route path="dashboard" element={<DashboardPageAdmin />}/>
         <Route path="grupos" element={<GroupPageAdmin />}>
-          <Route path="detalles/:groupId" element={ <DetailsByGroupAdmin />} />
+          <Route path="detalles" element={ <DetailsByGroupAdmin />} />
         </Route>
         <Route path="usuarios" element={<UserPageAdmin />}/>
       </Route>
       <Route
-        path="/lider" 
+        path="/supervisor" 
         element={
           <ProtectedRoute allowedRoles={[2]}>
             <LayoutLeader/>
@@ -95,12 +95,11 @@ function App() {
         }
       >
         <Route path="grupos" element={<GroupPageLeader />}>
-          
-          <Route path="detalles/:groupId" element={ <DetailsByGroup />} />
+          <Route path="detalles" element={ <DetailsByGroup />} />
         </Route>
       </Route>
       <Route
-        path="/tecnico" 
+        path="/inspector" 
         element={
           <ProtectedRoute allowedRoles={[3]}>
             <LayoutTechnician />

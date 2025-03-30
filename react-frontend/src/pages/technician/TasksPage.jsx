@@ -14,12 +14,13 @@ function TasksPage() {
   const [tasks, setTasks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
+  const [isLoading, setIsLoading] = useState(0);
 
   const location = useLocation();
   const groupId = location.state?.groupId;
 
-
   const fetchData = async(page = 1, search = searchTerm) => {
+    setIsLoading(true)
     try {
       const response = await taskService.taskListPagByGroupAndUserTech(groupId, user.userId, page, search);
       setTasks(response.data.tasks);
@@ -27,6 +28,8 @@ function TasksPage() {
       setCurrentPage(response.data.page);
     } catch (error){
       console.error("Errro fetching tasks: ", error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -76,6 +79,7 @@ function TasksPage() {
           <TableTasksByUser 
             tasks={tasks} 
             onUpdate={handleSave} 
+            isLoading={isLoading}
           />
           <Pagination
             currentPage={currentPage}

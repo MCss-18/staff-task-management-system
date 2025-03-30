@@ -44,7 +44,6 @@ export class TaskDelayController {
     }
   }
 
-
   async deleteTaskDelay(req, res) {
     try {
       let taskDelayService = new TaskDelayService();
@@ -61,6 +60,44 @@ export class TaskDelayController {
       res.status(HTTPSTATUS.INTERNAL_SERVER_ERROR).json({ 
         success: false,
         message: "Error al eliminar la tarea", error 
+      });
+    }
+  }
+
+  async getTaskDelayByGroupAndUser(req, res){
+    const { groupStaffId } = req.params;
+    try {
+      let taskDelayService = new TaskDelayService();
+      const tasksDelay = await taskDelayService.getTaskDelayByGroupAndUser(groupStaffId);
+
+      return res.status(HTTPSTATUS.OK).json({
+        message: "Tasks successfully obtained",
+        tasksDelay: tasksDelay ?? []
+      });
+    } catch (error){
+      console.error("Error CTRL - getTaskDelayByGroupAndUser: ", error);
+      res.status(HTTPSTATUS.INTERNAL_SERVER_ERROR).json({ 
+        success: false,
+        message: "Error al obtener las tareas", error 
+      });
+    }
+  }
+
+  async getTaskDelayByGroup(req, res){
+    const { groupId } = req.params;
+    try {
+      let taskDelayService = new TaskDelayService();
+      const tasksDelay = await taskDelayService.getTaskDelayByGroup(groupId);
+
+      return res.status(HTTPSTATUS.OK).json({
+        message: "Tasks - delays successfully obtained",
+        tasksDelay: tasksDelay ?? []
+      });
+    } catch (error){
+      console.error("Error CTRL - getTaskDelayByGroup: ", error);
+      res.status(HTTPSTATUS.INTERNAL_SERVER_ERROR).json({ 
+        success: false,
+        message: "Error al obtener las tareas", error 
       });
     }
   }

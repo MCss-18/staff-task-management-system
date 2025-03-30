@@ -59,7 +59,7 @@ function LoginPage() {
             </form>
           </div>
         </div>
-        <div>
+        <div className='copyrights'>
           <p>2025 © Ademinsac | Todos los Derechos Reservados</p>
         </div>
       </div>

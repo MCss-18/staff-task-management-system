@@ -1,39 +1,41 @@
-import { Search } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Download, Search } from "lucide-react";
+import { useEffect, useState } from "react";
 import InputIcon from "../../common/InputIcon";
 import Pagination from "../../common/Pagination";
 import groupMemberService from "../../../services/api/groupMemberService";
 import TableMembersByGroup from "../../leader/tables/TableMembersByGroup";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { PropTypes } from 'prop-types';
 import taskService from "../../../services/api/taskService";
 import TableTasksByGroupAdmin from "../tables/TableTasksByGroupAdmin";
+import { getFormattedDateTime } from "../../../utils/dateHourNow";
+import { exportToExcel } from "../../../utils/exportToExcel";
+import delayTaskService from "../../../services/api/delayTaskService";
+import IconButton from "../../common/IconButton";
 
 
 const PanelTask = ({groupId}) => {
   const [ tasks, setTasks ] = useState([]);
   const RECORDS_TABLE = 12;
-  const [showForm, setShowForm] = useState(false);
-  const [ selectedTask, setSelectedTask] = useState(null);
+  // const [ selectedTask, setSelectedTask] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const overlayRef = useRef(null);
+    const [isLoading, setIsLoading] = useState(false);
  
   const fetchData = async(page = 1, search = searchTerm) => {
+    setIsLoading(true)
     try {
       const response = await taskService.taskListPagByGroup(groupId, page, search);
       setTasks(response.data.tasks);
       setTotalRecords(response.data.total);
       setCurrentPage(response.data.page);
     } catch (error){
-      console.error("Errro fetching groups: ", error)
+      console.error("Error fetching tasks: ", error)
+    } finally {
+      setIsLoading(false)
     }
   }
-
-  const closeForm = () => {
-    setShowForm(false)
-  };
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -51,18 +53,26 @@ const PanelTask = ({groupId}) => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (overlayRef.current && overlayRef.current === event.target) {
-        closeForm();
-      }
-    };
+  const exportTaskDelayGroupExcel = async (groupId) => {
+    try {
+      const response = await delayTaskService.taskDelayByGroup(groupId )
+ 
+      return response.data.tasksDelay
+    } catch (error){
+      console.error('Error importing tasks:', error)
+      return [];
+    } 
+  }
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [closeForm]);
+  const handleDownload = async (groupId) => {
+    try {
+      const data = await exportTaskDelayGroupExcel(groupId);
+      const formattedDateTime = getFormattedDateTime()
+      exportToExcel(data, `tareas-demoras-grupo - ${formattedDateTime}.xlsx`);
+    } catch (error) {
+      console.error('Error exporting tasks:', error);
+    }
+  };
 
   return (
   <div>
@@ -76,18 +86,21 @@ const PanelTask = ({groupId}) => {
           onChange={handleSearch}
         />
       </div>
-      {/* <div className='control-user'>
+      <div className="control-user">
         <IconButton 
-          icon={Plus}
-          onClick= {openForm}
+          icon={Download}
+          onClick= {() => handleDownload(groupId)}
         >
-          <span>Agregar tarea</span>
+          <span>Excel demoras</span>
         </IconButton>
-      </div> */}
+      </div>
     </div>
     <div className='body-section'>
       <div className="container-table">
-        <TableTasksByGroupAdmin tasks={tasks}/>
+        <TableTasksByGroupAdmin 
+          tasks={tasks}
+          isLoading={isLoading}
+        />
         <Pagination 
           currentPage={currentPage} 
           totalPages={totalPages} 
@@ -95,7 +108,6 @@ const PanelTask = ({groupId}) => {
         />
       </div>
     </div>
-  
   </div>
   )
 };
@@ -104,14 +116,14 @@ const PanelMembers = ({groupId}) => {
   
   const [ members, setMembers ] = useState([]);
   const RECORDS_TABLE = 12;
-  const [showForm, setShowForm] = useState(false);
-  const [ selectedMember, setSelectedMember] = useState(null);
+  // const [ selectedMember, setSelectedMember] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const overlayRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
  
   const fetchData = async(page = 1, search = searchTerm) => {
+    setIsLoading(true)
     try {
       const response = await groupMemberService.membersListPagByGroup(groupId, page, search);
       setMembers(response.data.members);
@@ -119,12 +131,10 @@ const PanelMembers = ({groupId}) => {
       setCurrentPage(response.data.page);
     } catch (error){
       console.error("Error fetching members: ", error)
+    } finally {
+      setIsLoading(false)
     }
   }
-
-  const closeForm = () => {
-    setShowForm(false)
-  };
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -154,18 +164,13 @@ const PanelMembers = ({groupId}) => {
             onChange={handleSearch}
           />
         </div>
-        {/* <div className='control-user'>
-          <IconButton 
-            icon={Plus}
-            onClick= {openForm}
-          >
-            <span>Agregar miembros</span>
-          </IconButton>
-        </div> */}
       </div>
       <div className='body-section'>
         <div className="container-table">
-          <TableMembersByGroup members={members} />
+          <TableMembersByGroup 
+            members={members} 
+            isLoading={isLoading}
+          />
           <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
         </div>
       </div>
@@ -173,12 +178,12 @@ const PanelMembers = ({groupId}) => {
   )
 };
 
-
 function DetailsByGroupAdmin() {
   const [activeTab, setActiveTab] = useState("tasks");
 
   const navigate = useNavigate();
-  let { groupId } = useParams();
+  const location = useLocation();
+  const groupId = location.state?.groupId;
   const panels = {
     tasks: <PanelTask groupId={groupId}/>,
     members: <PanelMembers groupId={groupId}/>,
@@ -188,7 +193,6 @@ function DetailsByGroupAdmin() {
     navigate(-1);
   };
 
-  
 
   return (
     <section className='absolute w-full top-0 left-0 h-full p-5 flex flex-col bg-white rounded-2xl'>
@@ -211,7 +215,6 @@ function DetailsByGroupAdmin() {
             </button>
           ))}
         </div>
-
         <div className="mt-4">
           {panels[activeTab]}
         </div>

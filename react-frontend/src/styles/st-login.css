@@ -6,6 +6,15 @@
   align-items: center;
 }
 
+.login-page .login__h h2 {
+  font-size: 2rem;
+}
+
+.login-page .login__h h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
 .login-page .login-form-container {
   width: 50%;
   height: 100%;
@@ -54,12 +63,11 @@
 
 .login-page .login-form-container p {
   font-size: var(--text-sx);
-  color: var(--text-secondary);
+  /* color: var(--text-secondary); */
   text-align: center;
   margin-top: var(--spacing-lg);
 }
 
-/* Estilo para la imagen en la sección derecha */
 .login-page .image-wrapper {
   width: 50%;
   height: 100vh;
@@ -77,4 +85,50 @@
 
 .login-page .image-wrapper:hover img {
   transform: scale(1.02);
+}
+
+@media (max-width: 600px) {
+  .login-page {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .login-page .login-form-container p {
+    font-size: 0.9rem; 
+  }
+
+  .login-page .login__h h2 {
+    font-size: 1.5rem; 
+  }
+
+  .login-page .login__h h3 {
+    font-size: 1rem;
+  }
+
+  .login-page .login-form-container{
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 4;
+  }
+
+  .login-page .image-wrapper {
+    width: 100%;
+  }
+  
+  .login-page .login-container {
+    width: auto;
+    background-color: white;
+    padding: 40px;
+    border-radius: var(--radius-2xl);
+  }
+  
+  .copyrights{
+    color: white;
+  }
+
 }
