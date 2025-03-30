@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { X } from 'lucide-react';
+import { Trash2, X } from 'lucide-react';
 import Button from '../../common/Button';
 import groupMemberService from '../../../services/api/groupMemberService';
 import typeTaskService from '../../../services/api/typeTaskService';
 import taskService from '../../../services/api/taskService';
+import PropTypes from 'prop-types';
+import DropdownSelect from '../../common/dropdownSelect';
 
 function FormTaskGroup({ closeForm, groupId, onSave }) {
   const [errorMessage, setErrorMessage] = useState('');
@@ -48,7 +50,7 @@ function FormTaskGroup({ closeForm, groupId, onSave }) {
     const member = members.find((m) => m.groupStaffId === selectedMember);
     const task = tasks.find((t) => t.typeTaskId === selectedTask);
   
-    // Verificar que los datos existen antes de agregarlos
+    // Verificar que los datos existen antes de agregar
     if (!member || !task) {
       setErrorMessage('Error al asignar la tarea. Intente nuevamente.');
       return;
@@ -66,7 +68,7 @@ function FormTaskGroup({ closeForm, groupId, onSave }) {
   
     setTaskList((prevList) => [...prevList, { user: member, task }]);
   
-    // Limpiar selección
+    // Limpiar seleccion
     setSelectedMember('');
     setSelectedTask('');
     setErrorMessage('');
@@ -86,7 +88,6 @@ function FormTaskGroup({ closeForm, groupId, onSave }) {
         throw new Error('Debe agregar al menos un usuario con una tarea.');
       }
 
-      // Aquí enviarías taskList al backend
       await taskService.createTask(taskList);
 
       closeForm();
@@ -111,60 +112,93 @@ function FormTaskGroup({ closeForm, groupId, onSave }) {
       <form onSubmit={handleSubmit}>
         <div className="group-form">
           <div className="subgroup-form">
-            <label htmlFor="memberSelect">Seleccionar técnico *</label>
-            <select id="memberSelect" value={selectedMember} onChange={(e) => setSelectedMember(Number(e.target.value))}>
-              <option value="">Seleccione un técnico</option>
-              {members.map((member) => (
-                <option key={member.groupStaffId} value={member.groupStaffId}>
-                  {member.surnames}, {member.names}
-                </option>
-              ))}
-            </select>
+            <label htmlFor="memberSelect">Seleccionar inspector <span className='required'>*</span></label>
+            <DropdownSelect
+              label="Seleccione un inspector"
+              name="selectedMember"
+              value={members}
+              fetchData={async () =>
+                members.map((m) => ({
+                  id: m.groupStaffId,
+                  label: `${m.surnames}, ${m.names}`,
+                }))
+              }
+              handleChange={(e) => setSelectedMember(e.target.value)}
+            />
           </div>
           <div className="subgroup-form">
-            <label htmlFor="taskSelect">Seleccionar tarea *</label>
-            <select id="taskSelect" value={selectedTask} onChange={(e) => setSelectedTask(Number(e.target.value))}>
-              <option value="">Seleccione una tarea</option>
-              {tasks.map((task) => (
-                <option key={task.typeTaskId} value={task.typeTaskId}>
-                  {task.codOt} - {task.typeTask}
-                </option>
-              ))}
-            </select>
+            <label htmlFor="taskSelect">Seleccionar tarea <span className='required'>*</span></label>
+            <DropdownSelect
+              label="Seleccione una tarea"
+              name="selectedTask"
+              value={tasks}
+              fetchData={async () =>
+                tasks.map((t) => ({
+                  id: t.typeTaskId,
+                  label: `${t.codOt} - ${t.typeTask}`,
+                }))
+              }
+              handleChange={(e) => setSelectedTask(e.target.value)}
+            />
           </div>
           <div className="subgroup-form">
-            <button type="button" onClick={handleAddItem} className="btn-add">
+            <button 
+              type="button" 
+              onClick={handleAddItem} 
+              className="btn-add hover:bg-green-500"
+            >
               Agregar
             </button>
           </div>
-        </div>
-
-        {taskList.length > 0 && (
-  <ul>
-    {taskList.map((item, index) => {
-      if (!item.user || !item.task) return null;
-
-      return (
-        <li key={index}>
-          {item.user.surnames}, {item.user.names} - {item.task.codOt} - {item.task.typeTask}
-          <button type="button" onClick={() => handleRemoveItem(index)} className="btn-remove">
-            Eliminar
-          </button>
-        </li>
-      );
-    })}
-  </ul>
-)}
-
-
-        {errorMessage && <p className="error-message">{errorMessage}</p>}
-
-        <div className="subgroup-form">
-          <Button isLoading={isLoading}>Finalizar</Button>
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
+          <div className="subgroup-form">
+            <Button 
+              isLoading={isLoading}
+            >
+              Finalizar
+            </Button>
+          </div>
+          {taskList.length > 0 && (
+            <div className="subgroup-form">
+              <ul className="mt-4 flex flex-col gap-3 max-w-[420px] max-h-[200px] overflow-y-auto">
+                {taskList.map((item, index) => {
+                  if (!item.user || !item.task) return null;
+                  return (
+                    <li
+                      key={index}
+                      className="flex gap-2 justify-between items-center bg-gray-800 text-white p-3 rounded-lg shadow-md border-l-4 border-red-500"
+                    >
+                      <div className='flex flex-col'>
+                        <span className="text-sm font-medium">
+                          {item.user.surnames}, {item.user.names}
+                        </span>
+                        <span className='text-sm'>
+                          {item.task.codOt} - {item.task.typeTask}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveItem(index)}
+                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm transition"
+                      >
+                        <Trash2/>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
         </div>
       </form>
     </div>
   );
 }
+
+FormTaskGroup.propTypes = {
+  groupId: PropTypes.number.isRequired,
+  closeForm: PropTypes.func.isRequired,
+  onSave: PropTypes.func
+};
 
 export default FormTaskGroup

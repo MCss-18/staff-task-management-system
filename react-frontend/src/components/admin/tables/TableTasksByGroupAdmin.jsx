@@ -3,6 +3,7 @@ import TagTable from '../../common/TagTable';
 import { Eye } from 'lucide-react';
 import PropTypes from 'prop-types';
 import Table from '../../common/Table';
+import DetailsTaskDelay from '../modal/DetailsTaskDelay';
 
 const columns = [
   { 
@@ -36,8 +37,8 @@ function TableTasksByGroupAdmin({ tasks, isLoading }) {
   const [showModalTask, setShowModalTask] = useState(false);
   const overlayRef = useRef(null);
 
-  const openModal = (group) => {
-    setSelectedTask(group);
+  const openModal = (task) => {
+    setSelectedTask(task);
     setShowModalTask(true);
   };
 
@@ -71,6 +72,7 @@ function TableTasksByGroupAdmin({ tasks, isLoading }) {
       actionButton={(task) => (
         <div className='flex gap-2 relative'>
           <button 
+            onClick={() => openModal(task)}
             className="p-1 bg-blue-100 hover:bg-blue-200 text-blue-500 hover:text-blue-700 rounded-md btn-tooltip"
           >
             <Eye />
@@ -81,7 +83,10 @@ function TableTasksByGroupAdmin({ tasks, isLoading }) {
     />
     {showModalTask && selectedTask && (
       <div className="overlay" >
-  
+        <DetailsTaskDelay 
+          taskId={selectedTask.taskId}
+          close={closeForm}
+        />
       </div>
     )}
   </>

@@ -85,7 +85,7 @@ const TableMembersByGroup =({members, isLoading}) => {
           </div>
         )}
       />
-      {showModalMember && (
+      {showModalMember && selectedMember && (
         <div className="overlay" >
      
         </div>

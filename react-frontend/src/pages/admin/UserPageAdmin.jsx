@@ -13,8 +13,10 @@ function UserPageAdmin() {
   const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchData = async(page = 1, search = searchTerm) => {
+    setIsLoading(true);
     try {
       const response = await userService.userListPaginated(page, search);
       setUsers(response.data.users);
@@ -22,6 +24,8 @@ function UserPageAdmin() {
       setCurrentPage(response.data.page);
     } catch (error){
       console.error("Errro fetching Users: ", error)
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -94,6 +98,7 @@ function UserPageAdmin() {
           <TableUsers 
             users={users} 
             onUpdate={handleSave} 
+            isLoading={isLoading}
           />
           <Pagination
             currentPage={currentPage}

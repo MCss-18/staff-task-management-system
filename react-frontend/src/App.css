@@ -144,3 +144,33 @@ main section .settings-container{
 tbody td {
   border-bottom: 1px solid var(--border); 
 }
+
+/* modal */
+
+.modal {
+  width: 100%;
+  margin: 5px;
+  background-color: var(--background);
+  border-radius: var(--radius-4xl);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+
+@media screen and (max-width: 480px) {
+  main section .control{
+    flex-direction: column;
+  }
+  
+  main section .control input{
+    width: 100%;
+    flex-direction: column;
+  }
+
+  main section .control .control-user button{
+    width: 100%;
+  }
+
+}

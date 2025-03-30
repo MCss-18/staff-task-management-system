@@ -3,8 +3,42 @@ import PropTypes from 'prop-types';
 import TagTable from '../../common/TagTable';
 import { PencilLine } from 'lucide-react';
 import FormUser from '../forms/FormUser';
+import Table from '../../common/Table';
 
-function TableUsers({ users, onUpdate }) {
+const columns = [
+  { 
+    key: "names", 
+    label: "NOMBRES"
+  },
+  { 
+    key: "surnames", 
+    label: "APELLIDOS" 
+  },
+  { 
+    key: "email", 
+    label: "CORREO" 
+  },
+  { 
+    key: "username", 
+    label: "USUARIO" 
+  },
+  { 
+    key: "rolId", 
+    label: "ROL",
+    render: (value) => <TagTable state={value} type={3} />
+  },
+  { 
+    key: "state", 
+    label: "ESTADO",
+    render: (value) => <TagTable state={value} type={1} />
+  },
+  { 
+    key: "creationDate", 
+    label: "CREACION" 
+  }
+];
+
+function TableUsers({ users, isLoading, onUpdate }) {
   const [showForm, setShowForm] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const overlayRef = useRef(null);
@@ -36,41 +70,22 @@ function TableUsers({ users, onUpdate }) {
   }
 
   return (
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>NOMBRES</th>
-            <th>APELLIDOS</th>
-            <th>CORREO</th>
-            <th>ROL</th>
-            <th>ESTADO</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map(user => (
-            <tr key={user.userId}>
-              <td>{user.userId}</td>
-              <td>{user.names}</td>
-              <td>{user.surnames}</td>
-              <td>{user.email}</td>
-              <td>
-                <TagTable state={user.rolId} type={3}/>
-              </td>
-              <td>
-                <TagTable state={user.state} type={1}/>
-              </td>
-              <td>
-                <button onClick={() => openForm(user)}>
-                  <PencilLine />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <>
+      <Table
+        columns={columns}
+        data={users}
+        isLoading={isLoading}
+        actionButton={(user) => (
+          <div className='flex gap-2 relative'>
+            <button 
+              onClick={() => openForm(user)}
+              className="p-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-500 hover:text-yellow-700 rounded-md"
+            >
+              <PencilLine />
+            </button>
+          </div>
+        )}
+      />
       {showForm && selectedUser && (
         <div className="overlay" ref={overlayRef}>
           <FormUser
@@ -82,12 +97,13 @@ function TableUsers({ users, onUpdate }) {
           />
         </div>
       )}
-    </div>
+    </>
   );
 }
 
 TableUsers.propTypes = {
   users: PropTypes.array.isRequired,
+  isLoading: PropTypes.func.isRequired,
   onUpdate: PropTypes.func
 };
 

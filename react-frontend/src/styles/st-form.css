@@ -6,11 +6,11 @@
   gap: 10px;
   width: auto;
   min-width: 400px;
-  max-width: 100%;
-  max-height: 90vh;
+  max-width: 600px;
+  max-height: 95vh;
   border-radius: 10px;
   position: relative;
-  overflow: auto;
+  overflow: visible;
 }
 
 .container-form::-webkit-scrollbar {
@@ -154,7 +154,7 @@
 .container-form form input[type='number'],
 .container-form form input[type='date'],
 .container-form form input[type='password']{
-  width: 420px;
+  min-width: 340px;
 } 
 
 

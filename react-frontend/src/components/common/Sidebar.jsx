@@ -11,7 +11,7 @@ function Sidebar({ items }) {
 
   return (
     <nav
-      className={`h-screen flex flex-col justify-between items-center border-r transition-all duration-300 ease-in-out ${
+      className={`h-screen flex flex-col justify-between items-center border-r transition-all duration-300 ease-out ${
         collapsed ? "w-[var(--width-collapsed)] p-4" : "w-[var(--width)] p-6"
       }`}
       style={{

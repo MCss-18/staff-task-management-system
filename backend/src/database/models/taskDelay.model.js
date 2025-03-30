@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+
 export class TaskDelayModel {
 
   async getTaskDelayByTaskId (connection, taskId){
@@ -9,7 +11,8 @@ export class TaskDelayModel {
       'td.observacion, ',
       'td.fecha, ',
       'td.hora_inicio, ',
-      'td.hora_fin ',
+      'td.hora_fin, ',
+      'td.fecha_creacion ',
 
       'FROM tarea_demora td',
       'LEFT JOIN categoria_demora cd ON td.categoria_demora_id = cd.id_categoria_demora',
@@ -30,7 +33,8 @@ export class TaskDelayModel {
       descripcionDelay: row.descripcion,
       observation: row.observacion,
       startTime: row.hora_inicio,
-      endTime: row.hora_fin
+      endTime: row.hora_fin,
+      creationDate: row.fecha_creacion ? format(new Date(row.fecha_creacion), 'dd-MM-yyyy HH:mm:ss') : 'Fecha no disponible',
     }))
     return formattedRows;
   }
@@ -61,14 +65,14 @@ export class TaskDelayModel {
     const values = [ taskId]
     
     const query = [
-      'DELETE tarea_demora SET',
+      'DELETE FROM tarea_demora',
       'WHERE tarea_id = ?',
     ].join('\n')
     
     const result = connection.query(query, values);
     return result.rows;  
   }
-
+  
   async getTaskDelayByGroupAndUser (connection, groupStaffId) {
     const query = `
       SELECT 
@@ -96,8 +100,6 @@ export class TaskDelayModel {
   
     const values = [groupStaffId]
     const [ rows ] = await connection.query(query, values)
-    
-    console.table(groupStaffId)
     
     const estadoMap = {
       1: "No iniciado",

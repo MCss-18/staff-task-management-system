@@ -133,6 +133,7 @@ main{
   width: 100%;
   height: 100vh;
   display: flex;
+  flex-direction: column;
 }
 
 h2 {
@@ -256,7 +257,7 @@ button:disabled {
   padding-right: var(--spacing-lg);
   padding-top: var(--spacing-sm);
   padding-bottom: var(--spacing-sm);
-}
+} */
 
 
 button.btn-tab{
@@ -274,7 +275,7 @@ button.btn-tab.active{
 
 button.btn-tab:hover{
   border-bottom: 1px solid var(--blue-400);
-} */
+}
 
 .btn-tooltip {
   position: relative;

@@ -1,11 +1,11 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
-import NavbarAdmin from '../components/admin/NavbarAdmin'
+import HeaderAdmin from '../components/admin/HeaderAdmin'
 
 function LayoutAdmin() {
   return (
     <main>
-      <NavbarAdmin/>
+      <HeaderAdmin/>
       <div className='content'>
         <Outlet />
       </div>

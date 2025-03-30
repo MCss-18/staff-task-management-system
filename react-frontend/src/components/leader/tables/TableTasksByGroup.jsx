@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import Table from '../../common/Table';
 import taskService from '../../../services/api/taskService';
 import DialogAdvertaising from '../others/DialogAdvertaising';
+import DetailsTaskDelay from '../../admin/modal/DetailsTaskDelay';
 
 const columns = [
   { 
@@ -88,6 +89,7 @@ function TableTasksByGroup({ tasks, isLoading, onSave }) {
         actionButton={(task) => (
           <div className='flex gap-2 relative'>
             <button 
+              onClick={() => openModal(task)}
               className="p-1 bg-blue-100 hover:bg-blue-200 text-blue-500 hover:text-blue-700 rounded-md btn-tooltip"
             >
               <Eye />
@@ -95,10 +97,9 @@ function TableTasksByGroup({ tasks, isLoading, onSave }) {
             </button>
             <button 
               onClick={() => handleDeleteClick(task)}
-              className="p-1 bg-red-100 hover:bg-red-200 text-red-500 hover:text-red-700 rounded-md btn-tooltip"
+              className="p-1 bg-red-100 hover:bg-red-200 text-red-500 hover:text-red-700 rounded-md"
             >
               <Trash2 />
-              <span className="tooltip-text">Eliminar tarea</span>
             </button>
           </div>
         )}
@@ -109,6 +110,14 @@ function TableTasksByGroup({ tasks, isLoading, onSave }) {
             onClose={() => setShowDialog(false)}
             onConfirm={handleConfirmDelete}
             task={selectedTask}
+          />
+        </div>
+      )}
+      {showModalTask && selectedTask && (
+        <div className="overlay" >
+          <DetailsTaskDelay 
+            taskId={selectedTask.taskId}
+            close={closeForm}
           />
         </div>
       )}

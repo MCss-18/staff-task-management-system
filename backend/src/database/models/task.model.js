@@ -185,13 +185,13 @@ export class TaskModel {
   }
 
   async deleteTask (connection, taskId){
-    const values = [ taskId]
     
     const query = [
-      'DELETE tarea SET',
+      'DELETE FROM tarea',
       'WHERE id_tarea = ?',
     ].join('\n')
     
+    const values = [taskId]
     const result = connection.query(query, values);
     return result.rows;  
   }

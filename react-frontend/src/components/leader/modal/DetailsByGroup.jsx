@@ -4,7 +4,7 @@ import InputIcon from '../../common/InputIcon'
 import IconButton from '../../common/IconButton'
 import TableTasksByGroup from '../tables/TableTasksByGroup'
 import TableMembersByGroup from '../tables/TableMembersByGroup'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import taskService from '../../../services/api/taskService'
 import Pagination from '../../common/Pagination'
 import FormTaskGroup from '../forms/FormTaskGroup'
@@ -134,6 +134,7 @@ const PanelTask = ({groupId}) => {
           <TableTasksByGroup 
             tasks={tasks}
             isLoading={isLoading}
+            onSave={handleSave}
           />
           <Pagination 
             currentPage={currentPage} 
