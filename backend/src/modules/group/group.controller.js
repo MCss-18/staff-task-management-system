@@ -8,7 +8,6 @@ export class GroupController {
       const { technicianUserId } = req.params;
       let groupService = new GroupService();
       const groups = await groupService.getGroupsByMember(technicianUserId);
-      console.log("groups: ", groups)
       return res.status(HTTPSTATUS.OK).json({
         message: "Groups successfully obtained",
         groups: groups

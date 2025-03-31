@@ -47,7 +47,7 @@ function DropdownSelect({ label, name, value, fetchData, handleChange }) {
   };
 
   return (
-    <div className="relative w-full h-full px-(--spacing-xl) py-(--spacing-md)">
+    <div className="relative w-[340px] h-full px-(--spacing-xl) py-(--spacing-md)">
       <button
         type="button"
         className="w-full h-full border-gray-300 bg-[#F2F4F7] text-[#344054] rounded-md  focus:border-[#119395] flex justify-between items-center text-left hover:bg-[#F2F4F7] ocus:outline-none focus:ring-2 focus:ring-[#119395]"
@@ -74,7 +74,7 @@ function DropdownSelect({ label, name, value, fetchData, handleChange }) {
               filteredOptions.map(option => (
                 <div
                   key={option.id}
-                  className="cursor-pointer select-none py-2 px-4 hover:bg-indigo-100 hover:text-indigo-900"
+                  className="cursor-pointer select-none py-2 px-4 hover:bg-indigo-100 hover:text-indigo-900 text-ellipsis"
                   onClick={() => handleSelect(option)}
                 >
                   {option.label}

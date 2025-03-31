@@ -1,11 +1,11 @@
 import { Outlet } from 'react-router-dom';
-import NavbarTechnician from '../components/technician/NavbarTechnician';
+import HeaderTechnician from '../components/technician/HeaderTechnician';
 
 function LayoutTechnician() {
 
   return (
     <main>
-      <NavbarTechnician/>
+      <HeaderTechnician/>
       <div className='content'>
         <Outlet />
       </div>
