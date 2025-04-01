@@ -6,7 +6,7 @@ function HeaderTechnician() {
     {
       id: 1,
       label: "Grupos",
-      path: "grupos"
+      path: ""
     }
   ];
 
