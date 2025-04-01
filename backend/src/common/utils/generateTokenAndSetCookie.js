@@ -13,7 +13,7 @@ export const generateTokenAndSetCookie = (res, userId) => {
   res.cookie('token_access', token, {
     httpOnly: true,
     secure: config.NODE_ENV === 'production' || false,
-    sameSite: 'strict',
+    sameSite: 'Lax',
     maxAge: 7 * 24 * 60 * 60 * 1000
   })
 
