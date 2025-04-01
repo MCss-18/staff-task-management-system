@@ -14,7 +14,8 @@ export const generateTokenAndSetCookie = (res, userId) => {
     httpOnly: true,
     secure: config.NODE_ENV === 'production' || false,
     sameSite: 'Lax',
-    maxAge: 7 * 24 * 60 * 60 * 1000
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    path: '/'
   })
 
   return token;
