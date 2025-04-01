@@ -1,5 +1,5 @@
 import express from 'express'
-import morgan from 'morgan'
+// import morgan from 'morgan'
 import cors from 'cors';
 import cookieParser from "cookie-parser";
 import authRouter from './modules/auth/user.routes.js';
@@ -25,7 +25,7 @@ app.use(
 
 app.use(cookieParser());
 app.use(express.json());
-app.use(morgan('dev'));
+// app.use(morgan('dev'));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
