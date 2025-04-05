@@ -35,7 +35,6 @@ export const useAuthStore = create((set) => ({
 		set({ isLoading: true, error: null });
 		try {
 			await axios.post(`${API_URL}/logout`);
-			localStorage.removeItem("token");
       
 			set({ user: null, isAuthenticated: false, error: null, isLoading: false });
 		} catch (error) {
